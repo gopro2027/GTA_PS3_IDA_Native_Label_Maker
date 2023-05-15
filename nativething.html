@@ -1,0 +1,42 @@
+<html>
+
+<body>
+    <script
+  src="https://code.jquery.com/jquery-3.7.0.js"
+  integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+  crossorigin="anonymous"></script>
+  <!--<script src="natives_leaked_names.js"></script>-->
+    <script>
+	
+$.getJSON("natives_leaked_names.json", function(names) {
+	$.getJSON("natives.json", function(natives_def) {
+		run_json(natives_def, names);
+	});
+});
+
+
+
+function run_json(natives_def, natives_names) {
+	//console.log(natives_names);
+    //console.log(natives_def);
+	result = "{";
+	for (var namespaceName in natives_def) {
+		var namespace = natives_def[namespaceName];
+		for (var nativeHash64 in namespace) {
+			var _native = namespace[nativeHash64];
+			//console.log(_native);
+			jenkins = _native.jhash;
+			if (!jenkins) {
+				jenkins = "0x0";
+			}
+			name = natives_names[nativeHash64.toLowerCase()];
+			str = "\""+name+"\":{\"u64\":\""+nativeHash64+"\",\"u32\":\""+jenkins+"\"},";
+			result = result + str + "\n";
+		}
+	}
+	result = result + "}";
+	console.log(result);
+}
+    </script>
+</body>
+</html>
